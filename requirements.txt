@@ -1,0 +1,7 @@
+google-adk
+google-cloud-firestore
+google-generativeai
+fastapi
+uvicorn
+python-dotenv
+pydantic

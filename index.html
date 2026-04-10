@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Context Memory AI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #22c55e;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: black;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #16a34a;
+    }
+
+    .output {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+
+    .loader {
+      display: none;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🧠 Context Memory AI</h1>
+
+    <!-- ADD MEMORY -->
+    <div class="card">
+      <h2>Save Content</h2>
+      <input id="link" placeholder="Paste link (Instagram, etc)" />
+      <textarea id="description" placeholder="Short description"></textarea>
+      <button onclick="addMemory()">Save</button>
+      <div class="loader" id="addLoader">Saving...</div>
+      <div class="output" id="addResult"></div>
+    </div>
+
+    <!-- QUERY -->
+    <div class="card">
+      <h2>Ask Anything</h2>
+      <textarea id="query" placeholder="e.g. Plan an insta-worthy Goa trip"></textarea>
+      <button onclick="askQuery()">Ask</button>
+      <div class="loader" id="queryLoader">Thinking...</div>
+      <div class="output" id="queryResult"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+
+    async function addMemory() {
+      const link = document.getElementById("link").value;
+      const description = document.getElementById("description").value;
+
+      document.getElementById("addLoader").style.display = "block";
+
+      try {
+        const res = await fetch(`${API_BASE}/add`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ link, description })
+        });
+
+        const data = await res.json();
+        document.getElementById("addResult").innerText =
+          "✅ Saved!\n\n" + JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("addResult").innerText = "❌ Error saving";
+      }
+
+      document.getElementById("addLoader").style.display = "none";
+    }
+
+    async function askQuery() {
+      const query = document.getElementById("query").value;
+
+      document.getElementById("queryLoader").style.display = "block";
+
+      try {
+        const res = await fetch(`${API_BASE}/query`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query })
+        });
+
+        const data = await res.json();
+        document.getElementById("queryResult").innerText =
+          "🧠 Response:\n\n" + data.response;
+      } catch (err) {
+        document.getElementById("queryResult").innerText = "❌ Error fetching response";
+      }
+
+      document.getElementById("queryLoader").style.display = "none";
+    }
+  </script>
+
+</body>
+</html>
