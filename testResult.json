@@ -1,0 +1,43 @@
+{
+
+  "link": "https://www.youtube.com/watch?v=abc123xyz",
+  "description": "Saved this for Goa trip planning",
+
+  "source_type": "youtube",
+  "type": "travel",
+
+  "metadata": {
+    "title": "Top 10 Places to Visit in Goa | Complete Travel Guide",
+    "creator_name": "Travel with Kritika",
+    "creator_id": "UC1234567890",
+    "category": "Travel",
+    "tags": ["goa", "travel guide", "beaches", "india travel"]
+  },
+
+  "structured_data": {
+    "summary": "A comprehensive guide to popular beaches, cafes, and activities in Goa.",
+    "key_topics": ["beaches", "cafes", "water sports", "nightlife"],
+    "locations": ["Baga Beach", "Calangute", "Anjuna", "Palolem"],
+    "recommended_places": [
+      {
+        "name": "Baga Beach",
+        "type": "beach",
+        "notes": "Great for water sports and nightlife"
+      },
+      {
+        "name": "Artjuna Cafe",
+        "type": "cafe",
+        "notes": "Popular brunch spot"
+      }
+    ],
+    "content_type": "travel_guide",
+    "intent": "informational",
+    "estimated_duration": "3-5 days itinerary possible"
+  },
+
+  "raw_content": "Top 10 Places to Visit in Goa... (full transcript or scraped content)",
+
+  "transcript": "in this video we explore the best places to visit in goa including baga beach calangute and more...",
+
+  "created_at": "2026-04-12T10:30:00Z"
+}

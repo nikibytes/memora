@@ -1,9 +1,10 @@
 import os
 from google.adk import Agent
 from google.adk.agents import SequentialAgent
-from prompts import CONTEXT_EXTRACTION_PROMPT,CREATIVE_PROMPT
+from .prompts import CONTEXT_EXTRACTION_PROMPT,CREATIVE_PROMPT
 
-from tools import (
+from .tools import (
+    add_prompt_to_state,
     save_user_input,
     fetch_content,
     transcribe_content,
@@ -19,13 +20,52 @@ MODEL = os.getenv("MODEL")
 ingestion_agent = Agent(
     name="ingestion_agent",
     model=MODEL,
-    description="Handles link input and prepares raw content.",
+    description="Processes user-provided links and prepares structured content for downstream analysis.",
     instruction="""
-    - Save user link and description using tool
-    - Fetch content
-    - Transcribe content
-    """,
-    tools=[save_user_input, fetch_content, transcribe_content]
+You are a deterministic ingestion pipeline.
+
+Follow these steps STRICTLY:
+
+Step 1: Identify the link type
+- If the link is a YouTube URL → treat as YouTube content
+- Otherwise → treat as generic content
+
+Step 2: Save input
+- Call save_user_input with:
+  - link
+  - user description (if provided)
+
+Step 3: Fetch content
+- If YouTube:
+  - Call fetch_content with type="youtube"
+  - This should internally use YouTube Data API
+- Else:
+  - Call fetch_content with type="generic"
+
+Step 4: Transcription
+- If content contains audio/video:
+  - Call transcribe_content
+- If already text:
+  - Skip transcription
+
+Step 5: Output format (MANDATORY)
+Return a structured JSON:
+{
+  "source_type": "youtube | generic",
+  "link": "...",
+  "metadata": {...},
+  "transcript": "...",
+  "status": "success | failed"
+}
+
+Rules:
+- ALWAYS call tools, do not hallucinate data
+- NEVER skip save_user_input
+- NEVER generate transcript yourself
+- If any step fails, return status="failed" with reason
+"""
+    ,
+    tools=[transcribe_content, save_user_input, fetch_content]
 )
 
 # -----------------------------
@@ -58,9 +98,11 @@ memory_agent = Agent(
 retrieval_agent = Agent(
     name="retrieval_agent",
     model=MODEL,
-    description="Fetch stored memories.",
+    description="Fetch stored memories relevant to user query.",
     instruction="""
-    Retrieve all stored memory using tool.
+    The user's query is available in state under 'query'.
+    Use the retrieve_memory tool to fetch relevant memories.
+    Pass the query context so retrieval can filter appropriately.
     """,
     tools=[retrieve_memory],
     output_key="memories"
@@ -99,14 +141,22 @@ query_workflow = SequentialAgent(
     ]
 )
 root_agent = Agent(
-    name="greeter",
-    model=model_name,
-    description="The main entry point for Mnemosyne",
+    name="root_agent",
+    model=MODEL,                          # use MODEL from env, not model_name
+    description="Main entry point for the Mnemosyne contextual memory system.",
     instruction="""
-    - Let the user know you will help them store and organise links with context.
-    - When the user responds, use the 'add_prompt_to_state' tool to save their response.
-    After using the tool, transfer control to the 'tour_guide_workflow' agent.
+    You are Mnemosyne, an intelligent memory assistant.
+
+    When the user provides a LINK (URL from YouTube, Instagram, articles, etc.):
+    - Acknowledge that you will save and process their link.
+    - Transfer control to the 'add_workflow' agent.
+
+    When the user asks a QUESTION or QUERY about their saved memories:
+    - Acknowledge that you will search their memory bank.
+    - Transfer control to the 'query_workflow' agent.
+
+    If unclear whether it's a link or a query, ask the user to clarify.
     """,
-    tools=[add_prompt_to_state],
+    tools=[add_prompt_to_state],                             # no tools needed here anymore
     sub_agents=[add_workflow, query_workflow]
 )
