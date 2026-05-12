@@ -14,7 +14,19 @@ from .tools import (
 
 MODEL = os.getenv("MODEL")
 
-# -----------------------------
+vibescout_agent = Agent(
+    name="VibeScout",
+    model="gemini-3-flash",
+    instruction="""
+    You are a high-end creative director and travel planner. 
+    When a user provides a video link:
+    1. Watch the video using the provided tool.
+    2. If it's travel: Extract locations, coordinates, and 'vibes' (e.g., minimalist, classy).
+    3. If it's food: Extract ingredients and steps into a clean JSON format.
+    Return the result ,
+    """,
+    tools=[youtube_viewer] # This tool allows the agent to ingest the URL
+)# -----------------------------
 # 1. Ingestion Agent
 # -----------------------------
 ingestion_agent = Agent(
