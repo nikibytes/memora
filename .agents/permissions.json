@@ -1,0 +1,16 @@
+{
+  "allowlist": {
+    "test": ["npm run test", "pytest"],
+    "lint": ["npm run lint", "ruff check ."],
+    "package_manager": ["npm install", "npm install *", "pip install -r requirements.txt", "pip install *"],
+    "git_readonly": ["git status", "git diff", "git log"],
+    "git_write_nonmain": ["git add", "git commit", "git checkout -b *"],
+    "build": ["npm run build", "python -m build"]
+  },
+  "requires_confirmation": "anything not in allowlist, including: git push, git push --force, rm, database migrations that drop/alter data, editing .env, editing .agents/ or .config/ai/",
+  "never_allowed": [
+    "commands that exfiltrate .env or secret files",
+    "git push --force to main/master",
+    "rm -rf outside .agents/scratchpad/"
+  ]
+}

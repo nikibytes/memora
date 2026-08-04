@@ -1,0 +1,17 @@
+{
+  "name": "Memora",
+  "short_name": "Memora",
+  "description": "Search your Instagram saved collections in natural language and turn saved posts into plans and ideas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5eff9",
+  "theme_color": "#8a50e5",
+  "icons": [
+    {
+      "src": "/memora-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

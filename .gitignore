@@ -1,0 +1,27 @@
+# SQLite session DB (local dump of Instagram handshake)
+data/
+
+# Persistent Chromium profile (Puppeteer)
+data/ig-profile/
+
+# Backend Python
+backend/.venv/
+backend/__pycache__/
+backend/sessions/
+backend/python
+
+# Environment variables
+.env*.local
+
+# IDE (Antigravity / VS Code)
+.vscode/
+
+# Common ignores
+node_modules
+.next/
+.DS_Store
+COMMIT_PLAN.md
+phases/
+docs\changelog-agent.md
+docs\task-tracker.md
+

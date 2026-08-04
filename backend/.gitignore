@@ -1,0 +1,6 @@
+# Persisted Instagram sessions (contain auth secrets — never commit)
+sessions/
+__pycache__/
+*.pyc
+.env
+.venv/

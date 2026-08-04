@@ -1,0 +1,25 @@
+import sys
+print(sys.executable)
+# sys.path.append(r"C:\Users\crudg\Documents\Work\Hermes\test\myenv")
+from instagrapi import Client
+
+cl = Client()
+# try:
+#     cl.login("nikibytes.ai", "Futureminds@2026")
+# except Exception as e:
+#     if "Two-factor" in str(e):
+#         code = input("Enter code from WhatsApp: ")
+cl.login_by_sessionid("37086507258:XyAX6EPRSlxR64:0:AYhlBJKjrRk8snJF__hzwQXBjIc-hoQo7AKlmSYVLA")
+
+cl.dump_settings("session.json")
+# Fetch all your saved collections
+collections = cl.collections()
+
+for col in collections:
+    print(f"Collection Name: {col.name} (ID: {col.id})")
+    
+    # Fetch the posts (media) inside this specific collection
+    medias = cl.collection_medias(col.id, amount=20)
+    for media in medias:
+        print(f" - Post URL: https://instagram.com{media.code}/")
+        print(f" - Caption: {media.caption_text}")
