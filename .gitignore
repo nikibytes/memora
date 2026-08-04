@@ -22,6 +22,6 @@ node_modules
 .DS_Store
 COMMIT_PLAN.md
 phases/
-docs\changelog-agent.md
-docs\task-tracker.md
+docs/changelog-agent.md
+docs/task-tracker.md
 
